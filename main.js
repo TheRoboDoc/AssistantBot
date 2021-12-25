@@ -1,12 +1,10 @@
 const { Client, Intents, Message, MessageEmbed, DiscordAPIError, Collection } = require('discord.js');
-const { FILE } = require('dns');
 
 const AssistantUnit = new Client({intents : [Intents.FLAGS.GUILD_MESSAGES , Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILDS]});
 
 const prefix = '+';
 
 const fs = require('fs');
-const pingadmin = require('./commands/pingadmin');
 
 AssistantUnit.commands = new Collection();
 
@@ -30,35 +28,14 @@ AssistantUnit.on('messageCreate', message =>{
 
     message.channel.send('Command recieved...');
 
-    switch (command) {
-        case 'ping':
-            AssistantUnit.commands.get('ping').execute(message, args);
-            break;
-
-        case 'pingadmin':
-            AssistantUnit.commands.get('pingadmin').execute(message, args);
-            break;
-
-        case 'permissioncheck':
-            AssistantUnit.commands.get('permissioncheck').execute(message, args);
-            break;
-
-        case 'play':
-            AssistantUnit.commands.get('play').execute(message, args);
-            break;
-        
-        case 'leave':
-            AssistantUnit.commands.get('leave').execute(message, args);
-            break;
-
-        case 'clear':
-            AssistantUnit.commands.get('clear').execute(message, args);
-            break;
-
-        default:
-            message.channel.send('Invalid command');
-            break;
+    try{
+        AssistantUnit.commands.get(command).execute(message, args);
     }
+    catch(error){
+        console.error(error);
+        message.channel.send('Command not found');
+    }
+
 });
 
 AssistantUnit.login(''); //Redacted
